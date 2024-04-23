@@ -1,0 +1,12 @@
+{
+  "id_": 1,
+  "name_": "cartita1",
+  "mana_cost_": 2,
+  "color_": "nocolor",
+  "type_": "creature",
+  "rarity_": "common",
+  "rules_text_": "Esto hace cosas",
+  "market_value_": 10,
+  "power_": 2,
+  "toughness_": 2
+}

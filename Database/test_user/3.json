@@ -1,0 +1,11 @@
+{
+  "id_": 3,
+  "name_": "cartita3",
+  "mana_cost_": 2,
+  "color_": "nocolor",
+  "type_": "planeswalker",
+  "rarity_": "common",
+  "rules_text_": "Esto hace cosas",
+  "market_value_": 10,
+  "loyalty_marks_": 3
+}

@@ -1,0 +1,25 @@
+name: Tests
+on:
+  push:
+     branches: [ main ]
+  pull_request:
+     branches: [ main ]
+
+jobs:
+ build:
+   runs-on: ubuntu-latest # Se debe correr en la última versión de ubuntu estable
+
+   strategy:
+     matrix:
+       node-version: [16.x, 18.x, 19.x, 20.x, 21.x] # Se ejecuta en todos estornos.
+       # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+   steps: # Pasos a arealizar
+   - uses: actions/checkout@v4
+   - name: Use Node.js ${{ matrix.node-version }}
+     uses: actions/setup-node@v4
+     with:
+       node-version: ${{ matrix.node-version }} # Configuración del entorno.
+   - run: npm install
+   - run: npm run server
+   - run: npm test
