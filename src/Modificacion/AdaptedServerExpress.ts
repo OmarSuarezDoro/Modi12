@@ -1,7 +1,6 @@
 import express from 'express';
 import { Document, connect, model, Schema } from 'mongoose';
 import { Card } from '../ArchivosAntiguos/Card.js';
-import { ServerFunctionality } from './AdaptedServerFunctionality.js';
 import { requestMessage } from '../ArchivosAntiguos/customTypes.js';
 
 // Initialize the express server
@@ -33,6 +32,7 @@ interface CardDocumentInterface extends Document {
 const CardSchema = new Schema<CardDocumentInterface>({
   id_: {
     type: Number,
+    unique: true,
     required: true,
   },
   name_: {
@@ -61,10 +61,7 @@ const CardSchema = new Schema<CardDocumentInterface>({
   },
   type_: {
     type: String,
-    required: true,  mana_cost_: {
-      type: Number,
-      required: true,
-    }
+    required: true,
   },
   loyalty_marks_: {
     type: Number,
@@ -138,10 +135,6 @@ app.delete('/cards', (req, res) => {
     res.send({ statusCode: -1, dataObj: 'Query string missing parametters' });  // Cuidado con el mensaje
     return;
   }
-  // Check if the user exists
-  ServerFunctionality.checkUser(req.query.user as string).catch(err => {
-    res.send(err);
-  })
   // Build the request message, in order to use the function of the practice 10
   let requestMessage: requestMessage = {
     user: req.query.user as string,
