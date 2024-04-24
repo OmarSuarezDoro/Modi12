@@ -4,109 +4,97 @@ import request from 'request';
 
 describe('Pruebas de las rutas del servidor', () => {
   it('Comprobar la funcionalidad de GET /cards', (done) => {
-    request.get('http://localhost:3000/cards?user=Test User', (_: any, response: any) => {
+    request.get('http://localhost:3000/cards/osuarezdoro', (_: any, response: any) => {
       expect(response.statusCode).to.equal(200);
-      expect(JSON.parse(response.body).dataObj.length).to.equal(3);
+      expect(JSON.parse(response.body).length).to.equal(0);
       done();
     });
   });
 
   it('Comprobar la funcionalidad de fallo de GET /cards', (done) => {
-    request.get('http://localhost:3000/cards?user=Test Usersss', (_: any, response: any) => {
-      expect(response.statusCode).to.equal(200);
-      expect(JSON.parse(response.body).statusCode).to.equal(-2);
-      expect(JSON.parse(response.body).dataObj).to.equal("This user does not exist");
+    request.get('http://localhost:3000/cards/Test Usersss', (_: any, response: any) => {
+      expect(response.statusCode).to.equal(500);
+      expect(JSON.parse(response.body).message).to.equal("User does not exist");
       done();
     });
   });
 
   it('Comprobar la funcionalidad de POST /cards', (done) => {
     const newCard = {
-      type: 'Type',
-      id: 2,
-      name: 'New Card',
-      color: 'Color',
-      rarity: 'Rarity',
-      rules_text: 'Rules Text',
-      market_value: 100
+      "id_": 1,
+      "name_": "cartita de testeo",
+      "mana_cost_": 3,
+      "color_": "nocolor",
+      "type_": "creature",
+      "rarity_": "common",
+      "rules_text_": "Esto hace cosas",
+      "market_value_": 10,
+      "power_": 2,
+      "toughness_": 2
     };
 
-    request.post('http://localhost:3000/cards?user=Test User', { json: newCard }, (_: any, response: any) => {
+    request.post('http://localhost:3000/cards/osuarezdoro', { json: newCard }, (_: any, response: any) => {
       expect(response.statusCode).to.equal(200);
-      expect(response.body.statusCode).to.equal(201);
-      expect(response.body.dataObj).to.equal('The file was saved successfully!');
+      expect(response.body.message).to.equal('Card created');
       done();
     });
   });
   
   it('Comprobar la funcionalidad de fallo POST /cards', (done) => {
     const newCard = {
-      type: 'Type',
-      id: 3,
-      name: 'New Card',
-      color: 'Color',
-      rarity: 'Rarity',
-      rules_text: 'Rules Text',
-      market_value: 100
+      "id_": 1,
+      "name_": "cartita de testeo",
+      "mana_cost_": 3,
+      "color_": "nocolor",
+      "type_": "creature",
+      "rarity_": "common",
+      "rules_text_": "Esto hace cosas",
+      "market_value_": 10,
+      "power_": 2,
+      "toughness_": 2
     };
-
-    request.post('http://localhost:3000/cards?user=Test User', { json: newCard }, (_: any, response: any) => {
-      expect(response.statusCode).to.equal(200);
-      expect(response.body.statusCode).to.equal(-2);
-      expect(response.body.dataObj).to.equal('The file already exists!');
+    request.post('http://localhost:3000/cards/osuarezdoro', { json: newCard }, (_: any, response: any) => {
+      expect(response.statusCode).to.equal(500);
       done();
     });
   });
 
   it('Comprobar la funcionalidad de PATCH /cards', (done) => {
-    const updatedCard = {
-      name: 'Updated Card',
-      color: 'Updated Color',
-      rarity: 'Updated Rarity',
-      rules_text: 'Updated Rules Text',
-      market_value: 200
-    };
-
-    request.patch('http://localhost:3000/cards?user=Test User&id=2', { json: updatedCard }, (_: any, response: any) => {
+    const newCard = {
+      mana_cost_: -3
+    }
+    request.patch('http://localhost:3000/cards/osuarezdoro/1', { json: newCard }, (_: any, response: any) => {
       expect(response.statusCode).to.equal(200);
-      expect(response.body.statusCode).to.equal(201);
-      expect(response.body.dataObj).to.equal('The file was updated successfully!');
+      expect(response.body.mana_cost_).to.equal(-3);
       done();
     });
   });
 
   it('Comprobar la funcionalidad de fallo PATCH /cards', (done) => {
-    const updatedCard = {
-      name: 'Updated Card',
-      color: 'Updated Color',
-      rarity: 'Updated Rarity',
-      rules_text: 'Updated Rules Text',
-      market_value: 200
+    const newCard = {
+      mana_cost_: -3
     };
-
-    request.patch('http://localhost:3000/cards?user=Test User&id=4', { json: updatedCard }, (_: any, response: any) => {
-      expect(response.statusCode).to.equal(200);
-      expect(response.body.statusCode).to.equal(-2);
-      expect(response.body.dataObj).to.equal('The file does not exist!');
+    request.patch('http://localhost:3000/cards/osuarezdoro/2', { json: newCard }, (_: any, response: any) => {
+      expect(response.statusCode).to.equal(404);
       done();
     });
   });
 
   it('Comprobar la funcionalidad de DELETE /cards', (done) => {
-    request.delete('http://localhost:3000/cards?user=Test User&id=2', (_: any, response: any) => {
+    request.delete('http://localhost:3000/cards/osuarezdoro/1', (_: any, response: any) => {
       expect(response.statusCode).to.equal(200);
-      expect(JSON.parse(response.body).statusCode).to.equal(201);
-      expect(JSON.parse(response.body).dataObj).to.equal('The file was deleted successfully!');
+      expect(JSON.parse(response.body).acknowledged).to.equal(true);
+      expect(JSON.parse(response.body).deletedCount).to.equal(1);
       done();
     });
   });
 
 
   it('Comprobar la funcionalidad de fallo DELETE /cards', (done) => {
-    request.delete('http://localhost:3000/cards?user=Test User&id=4', (_: any, response: any) => {
-      expect(response.statusCode).to.equal(200);
-      expect(JSON.parse(response.body).statusCode).to.equal(-1);
-      expect(JSON.parse(response.body).dataObj).to.equal('The file does not exist!');
+    request.delete('http://localhost:3000/cards/osuarezdoro/2', (_: any, response: any) => {
+      expect(response.statusCode).to.equal(500);
+      expect(JSON.parse(response.body).acknowledged).to.equal(false);
+      expect(JSON.parse(response.body).deletedCount).to.equal(0);
       done();
     });
   });
